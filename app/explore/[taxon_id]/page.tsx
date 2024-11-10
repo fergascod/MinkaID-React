@@ -2,11 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
-
 
 function get_taxon_name_and_image(json, setData) {
     var taxon_name = json["results"][0]["name"];
+    console.log(json);
     setData({
         "taxon_name": taxon_name,
         "image": json["results"][0]["default_photo"]
@@ -25,8 +24,6 @@ function get_desc(json, setDesc) {
                 <Link href={`/explore/${json["results"][i]["id"]}`}>{json["results"][i]["name"]} ({json["results"][i]["id"]})</Link>
                 <br />
             </div>
-
-
         );
     }
     setDesc(desc);
@@ -34,7 +31,7 @@ function get_desc(json, setDesc) {
 
 function Taxa(taxonId, data, desc) {
     return (
-        <div className="flex justify-center">
+        <div className="justify-center">
             {data ?
                 <div>
                     <h1>{data["taxon_name"]}</h1>
