@@ -71,7 +71,8 @@ function Question({ taxonName, question, onGenerateNewQuestion, setResp, updateS
     return (
         <div>
             <h1>Mode de joc: {taxonName}</h1>
-            <img src={question.url}></img>
+            <img src={question.url["url"]}></img>
+            <p>{question.url["attribution"]}</p>
             <ul>{options}</ul>
         </div>
     )
@@ -146,7 +147,7 @@ export default function Test() {
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(json => setQuestion({
-                    url: json["results"][Math.floor(Math.random() * json["results"].length)]["photos"][0]["url"],
+                    url: json["results"][Math.floor(Math.random() * json["results"].length)]["photos"][0],
                     species: options,
                     correct: correctIndx
                 }))
