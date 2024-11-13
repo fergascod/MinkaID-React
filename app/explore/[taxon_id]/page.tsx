@@ -37,6 +37,8 @@ function Taxa(taxonId, data, desc) {
                 <div className='block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 align-center'>
                     <h1 className='font-serif mb-4 text-4xl leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl'>{data["taxon_name"]} </h1>
                     {data["parent_id"] ? <Link href={`/explore/${data["parent_id"]}`}> Ves al taxó pare</Link> : <p></p>}
+                    <br />
+                    <Link href={`/test?taxon_id=${taxonId}&num_questions=5`}> Fes un test d'aquest taxó!</Link>
                     <figure className="max-w-lg">
                         {data["image"] ?
                             <div>
