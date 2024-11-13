@@ -8,7 +8,7 @@ import { useSearchParams } from 'next/navigation'
 function get_game_modes() {
     console.log(game_modes)
     const options = []
-    for (var mode in game_modes) {
+    for (const mode in game_modes) {
         console.log(mode)
         options.push(<option key={mode} value={mode}>{mode}</option>)
     }
@@ -58,7 +58,7 @@ function returnName(sp) {
     return sp["name"]
 }
 
-function Question({ question, onGenerateNewQuestion, setResp, updateScore }) {
+function Question({ taxonName, question, onGenerateNewQuestion, setResp, updateScore }) {
     const options = question.species.map((species, i) => (
         <div key={i}>
             <button onClick={() => { setResp(i); console.log(question["correct"] == i); updateScore(question["correct"] == i); onGenerateNewQuestion(); }}>
@@ -70,16 +70,16 @@ function Question({ question, onGenerateNewQuestion, setResp, updateScore }) {
 
     return (
         <div>
+            <h1>Mode de joc: {taxonName}</h1>
             <img src={question.url}></img>
             <ul>{options}</ul>
-            <button onClick={onGenerateNewQuestion}>Next Question</button>
         </div>
     )
 }
 
 function getRandomCombination(arr, k) {
-    let tempArr = [...arr];
-    let combination = [];
+    const tempArr = [...arr];
+    const combination = [];
     for (let i = 0; i < k; i++) {
         const randIndex = Math.floor(Math.random() * tempArr.length);
         combination.push(tempArr[randIndex]);
@@ -93,9 +93,8 @@ export default function Test() {
     const taxon_id = searchParams.get('taxon_id')
     const num_questions = parseInt(searchParams.get('num_questions'))
 
-    if (!taxon_id) return TestForm();
-
     const [taxonId, setTaxonId] = useState(null);
+    const [taxonName, setTaxonName] = useState(null);
     const [numQuestions, setNumQuestions] = useState(null);
     const [ans, setAns] = useState<number | null>(null);
     const [data, setData] = useState(null);
@@ -110,6 +109,17 @@ export default function Test() {
             setNumQuestions(/^\+?(0|[1-9]\d*)$/.test(num_questions) ? num_questions : "1");
         }
     }, [taxon_id, num_questions]);
+
+    // Fetch species data based on taxonId
+    useEffect(() => {
+        if (taxonId) {
+            const apiUrl = `https://minka-sdg.org:4000/v1/taxa?taxon_id=${taxonId}&locale=ca&per_page=1`;
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(json => setTaxonName(returnName(json["results"][0])))
+                .catch(error => console.error(error));
+        }
+    }, [taxonId]);
 
     // Fetch species data based on taxonId
     useEffect(() => {
@@ -131,12 +141,12 @@ export default function Test() {
             const numOptions = 5;
             const options = getRandomCombination(species, numOptions);
             const correctIndx = Math.floor(Math.random() * numOptions);
-            const apiUrl = `https://minka-sdg.org:4000/v1/observations?photo_license=cc-by-nc&user_id=xasalva&taxon_id=${options[correctIndx]["id"]}&quality_grade=research&order=desc&order_by=created_at`;
+            const apiUrl = `https://minka-sdg.org:4000/v1/observations?photo_license=cc-by-nc&taxon_id=${options[correctIndx]["id"]}&quality_grade=research&order=desc&order_by=created_at`;
 
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(json => setQuestion({
-                    url: json["results"][0]["photos"][0]["url"],
+                    url: json["results"][Math.floor(Math.random() * json["results"].length)]["photos"][0]["url"],
                     species: options,
                     correct: correctIndx
                 }))
@@ -157,16 +167,19 @@ export default function Test() {
         console.log(ans)
     }, [question])
 
+    if (!taxon_id) { return TestForm(); }
+
     if (ans < num_questions) {
         return (
             <div>
                 {question
-                    ? <Question question={question}
+                    ? <Question
+                        taxonName={taxonName}
+                        question={question}
                         onGenerateNewQuestion={generateQuestion}
                         setResp={setResp}
                         updateScore={(b: boolean) => { setPoints(points + (b ? 1 : 0)) }} />
                     : "Loading..."}
-                <button onClick={() => console.log(resp)}>check</button>
             </div>
         )
     }

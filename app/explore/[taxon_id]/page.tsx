@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link'
 
 function get_taxon_name_and_image(json, setData) {
-    var taxon_name = json["results"][0]["name"];
+    const taxon_name = json["results"][0]["name"];
     console.log(json);
     setData({
         "taxon_name": taxon_name,
@@ -14,8 +14,8 @@ function get_taxon_name_and_image(json, setData) {
 }
 
 function get_desc(json, setDesc) {
-    var desc = [];
-    var n = json["total_results"];
+    const desc = [];
+    const n = json["total_results"];
     console.log(json)
     console.log(json["results"])
     for (let i = 0; i < n; i++) {
