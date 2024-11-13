@@ -4,6 +4,7 @@ import game_modes from '../game_modes.json'
 
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 
 function get_game_modes() {
     console.log(game_modes)
@@ -13,6 +14,24 @@ function get_game_modes() {
         options.push(<option key={mode} value={mode}>{mode}</option>)
     }
     return options
+}
+
+function getRandomCombination(arr, k) {
+    const tempArr = [...arr];
+    const combination = [];
+    for (let i = 0; i < k; i++) {
+        const randIndex = Math.floor(Math.random() * tempArr.length);
+        combination.push(tempArr[randIndex]);
+        tempArr.splice(randIndex, 1);
+    }
+    return combination;
+}
+
+function returnName(sp) {
+    if ("preferred_common_name" in sp) {
+        return `${sp["preferred_common_name"]} (${sp["name"]})`
+    }
+    return sp["name"]
 }
 
 function TestForm() {
@@ -51,42 +70,47 @@ function TestForm() {
     );
 }
 
-function returnName(sp) {
-    if ("preferred_common_name" in sp) {
-        return `${sp["preferred_common_name"]} (${sp["name"]})`
-    }
-    return sp["name"]
-}
-
 function Question({ taxonName, question, onGenerateNewQuestion, setResp, updateScore }) {
     const options = question.species.map((species, i) => (
-        <div key={i}>
-            <button onClick={() => { setResp(i); console.log(question["correct"] == i); updateScore(question["correct"] == i); onGenerateNewQuestion(); }}>
+        <div key={i} className="my-2">
+            <button
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors duration-200"
+                onClick={() => {
+                    setResp(i);
+                    console.log(question["correct"] === i);
+                    updateScore(question["correct"] === i);
+                    onGenerateNewQuestion();
+                }}
+            >
                 {returnName(species)}
             </button>
-            <br />
         </div>
     ));
 
     return (
-        <div>
-            <h1>Mode de joc: {taxonName}</h1>
-            <img src={question.url["url"]}></img>
-            <p>{question.url["attribution"]}</p>
-            <ul>{options}</ul>
+        <div className="p-6 bg-gray-100 rounded-lg shadow-md text-center">
+            <h1 className="text-2xl font-semibold text-gray-800 mb-4">Mode de joc: {taxonName}</h1>
+            <img src={question.url["url"]} alt="Species" className="w-full max-w-md mx-auto mb-4 rounded shadow-sm" />
+            <p className="text-sm text-gray-500 italic mb-6">{question.url["attribution"]}</p>
+            <ul className="space-y-2">{options}</ul>
         </div>
-    )
+    );
 }
 
-function getRandomCombination(arr, k) {
-    const tempArr = [...arr];
-    const combination = [];
-    for (let i = 0; i < k; i++) {
-        const randIndex = Math.floor(Math.random() * tempArr.length);
-        combination.push(tempArr[randIndex]);
-        tempArr.splice(randIndex, 1);
-    }
-    return combination;
+function Results(points, numQuestions) {
+    return (
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+            <h2 className="text-3xl font-semibold text-gray-800 mb-4">Test completat!</h2>
+            <p className="text-lg text-gray-700 mb-6">
+                N'has encertat <span className="font-bold text-blue-600">{points}</span> de <span className="font-bold text-blue-600">{numQuestions}</span>
+            </p>
+            <button
+                className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200"
+            >
+                <Link href={`/test`}>Fes un altre test!</Link>
+            </button>
+        </div>
+    )
 }
 
 export default function Test() {
@@ -184,9 +208,5 @@ export default function Test() {
             </div>
         )
     }
-    return (
-        <div>
-            <p>{`${points}/${num_questions}`}</p>
-        </div>
-    )
+    return Results(points, numQuestions);
 }
