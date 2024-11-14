@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
@@ -23,6 +23,7 @@ function returnName(sp) {
 }
 
 function Question({ taxonName, question, onGenerateNewQuestion, setResp, updateScore }) {
+    const dialogRef = useRef<HTMLDialogElement | null>(null)
     const options = question.species.map((species, i) => (
         <div key={i} className="my-2">
             <button
@@ -40,11 +41,19 @@ function Question({ taxonName, question, onGenerateNewQuestion, setResp, updateS
     ));
 
     return (
-        <div className="p-6 bg-gray-100 rounded-lg shadow-md text-center">
-            <h1 className="text-2xl font-semibold text-gray-800 mb-4">Mode de joc: {taxonName}</h1>
-            <img src={question.url["url"]} alt="Species" className="w-full max-w-md mx-auto mb-4 rounded shadow-sm" />
-            <p className="text-sm text-gray-500 italic mb-6">{question.url["attribution"]}</p>
-            <ul className="space-y-2">{options}</ul>
+        <div className="max-w-[90vw] max-h-[90vh]">
+            <dialog ref={dialogRef} className="w-2/3 max-w-none backdrop:bg-black/80">
+                <img src={question.url["url"]} alt="Species" className="rounded w-full h-auto object-contain" />
+                <button onClick={() => dialogRef.current?.close()}>cancel</button>
+            </dialog>
+            <div className="p-6 bg-gray-100 rounded-lg shadow-md text-center">
+                <h1 className="text-2xl font-semibold text-gray-800 mb-4">Mode de joc: {taxonName}</h1>
+                <button onClick={() => dialogRef.current?.showModal()}>
+                    <img src={question.url["url"]} alt="Species" className="w-full max-w-md mx-auto mb-4 rounded shadow-sm" />
+                </button>
+                <p className="text-sm text-gray-500 italic mb-6">{question.url["attribution"]}</p>
+                <ul className="space-y-2">{options}</ul>
+            </div>
         </div>
     );
 }
