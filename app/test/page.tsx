@@ -1,20 +1,8 @@
 "use client"
 
-import game_modes from '../game_modes.json'
-
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-
-function get_game_modes() {
-    console.log(game_modes)
-    const options = []
-    for (const mode in game_modes) {
-        console.log(mode)
-        options.push(<option key={mode} value={mode}>{mode}</option>)
-    }
-    return options
-}
 
 function getRandomCombination(arr, k) {
     const tempArr = [...arr];
@@ -32,42 +20,6 @@ function returnName(sp) {
         return `${sp["preferred_common_name"]} (${sp["name"]})`
     }
     return sp["name"]
-}
-
-function TestForm() {
-    get_game_modes()
-    return (
-        <div className="w-full max-w-xs text-center flex justify-center ">
-            <form className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                        Número de preguntes
-                    </label>
-                    <input
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="num_preg"
-                        type="number"
-                        min="1"
-                        max="20"
-                        step="1"
-                    />
-                </div>
-                <div className="mb-6">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">
-                        Mode de joc
-                    </label>
-                    <select className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        {get_game_modes()}
-                    </select>
-                </div>
-                <div className="flex items-center justify-between">
-                    <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" >
-                        Comença!
-                    </button>
-                </div>
-            </form>
-        </div>
-    );
 }
 
 function Question({ taxonName, question, onGenerateNewQuestion, setResp, updateScore }) {
@@ -107,7 +59,7 @@ function Results(points, numQuestions) {
             <button
                 className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200"
             >
-                <Link href={`/test`}>Fes un altre test!</Link>
+                <Link href={`/new_test`}>Fes un altre test!</Link>
             </button>
         </div>
     )
