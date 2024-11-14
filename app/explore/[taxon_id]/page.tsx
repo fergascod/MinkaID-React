@@ -16,56 +16,74 @@ function get_taxon_name_and_image(json, setData) {
 function get_desc(json, setDesc) {
     const desc = [];
     const n = json["total_results"];
-    console.log(json)
-    console.log(json["results"])
     for (let i = 0; i < n; i++) {
-        console.log(json["results"][i]["name"]);
         desc.push(
-            <div key={i}>
-                <Link className='font-serif' href={`/explore/${json["results"][i]["id"]}`}>{json["results"][i]["name"]} ({json["results"][i]["id"]})</Link>
-                <br />
+            <div key={i} className="mb-3">
+                <Link
+                    className="text-md font-medium text-blue-500 hover:text-blue-700 transition-colors duration-200"
+                    href={`/explore/${json["results"][i]["id"]}`}
+                >
+                    {json["results"][i]["name"]} <span className="text-gray-400">({json["results"][i]["id"]})</span>
+                </Link>
             </div>
         );
     }
     setDesc(desc);
 }
-
 function Taxa(taxonId, data, desc) {
     return (
-        <div className="justify-center">
-            {data ?
-                <div className='block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 align-center'>
-                    <h1 className='font-serif mb-4 text-4xl leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl'>{data["taxon_name"]} </h1>
-                    {data["parent_id"] ? <Link href={`/explore/${data["parent_id"]}`}> Ves al taxó pare</Link> : <p></p>}
-                    <br />
-                    <Link href={`/test?taxon_id=${taxonId}&num_questions=5`}> Fes un test d'aquest taxó!</Link>
-                    <figure className="max-w-lg">
-                        {data["image"] ?
-                            <div>
-                                <img className="h-auto max-w-full rounded-lg" src={data["image"]["url"]} alt="image description" />
-                                <figcaption className="mt-2 text-sm text-center text-gray-500 dark:text-gray-400">
+        <div className="flex justify-center w-full px-4 py-8 bg-gray-50 min-h-screen">
+            {data ? (
+                <div className="flex flex-col items-center w-full max-w-md bg-white rounded-lg shadow-md p-6 h-full">
+                    <h1 className="text-xl font-bold text-gray-800 text-center mb-2">
+                        {data["taxon_name"]}
+                    </h1>
+
+                    {data["parent_id"] && (
+                        <Link
+                            href={`/explore/${data["parent_id"]}`}
+                            className="text-sm font-medium text-blue-500 hover:text-blue-700 mb-2 transition-colors duration-200"
+                        >
+                            &larr; Go to Parent Taxon
+                        </Link>
+                    )}
+
+                    <Link
+                        href={`/test?taxon_id=${taxonId}&num_questions=5`}
+                        className="inline-block bg-blue-600 text-white rounded-md py-2 px-4 font-semibold my-4 hover:bg-blue-700 transition-colors duration-200"
+                    >
+                        Take a Quiz on This Taxon!
+                    </Link>
+
+                    <figure className="w-full">
+                        {data["image"] ? (
+                            <div className="rounded-lg overflow-hidden shadow mb-4">
+                                <img
+                                    className="w-full h-64 object-cover"
+                                    src={data["image"]["url"]}
+                                    alt={`${data["taxon_name"]} image`}
+                                />
+                                <figcaption className="text-sm text-gray-500 text-center mt-2">
                                     {data["image"]["attribution"]}
                                 </figcaption>
                             </div>
-                            :
-                            <br />
-                        }
-
+                        ) : (
+                            <p className="text-center text-gray-500 italic">No image available</p>
+                        )}
                     </figure>
                 </div>
-                : 'Loading...'}
+            ) : (
+                <p className="text-gray-500 text-lg">Loading...</p>
+            )}
 
-            <br />
-
-            {desc ?
-                <div>
-                    {desc}
-                </div>
-                : 'Loading...'}
+            {/* Scrollable Sidebar for Child Taxons */}
+            <div className="w-64 h-full overflow-y-auto bg-white rounded-lg shadow-md p-4 ml-8">
+                <h2 className="text-lg font-semibold text-gray-800 mb-3">Child Taxons</h2>
+                {desc ? desc : <p className="text-gray-500">Loading descriptions...</p>}
+            </div>
         </div>
     );
 }
-
 
 export default function Taxonomy({ params }: { params: Promise<{ taxon_id: string }> }) {
     const [taxonId, setTaxonId] = useState<string | null>(null);
