@@ -71,7 +71,8 @@ export default function TestForm() {
             <div className='p-5 m-5 mx-auto w-1/2 outline rounded'>
                 <p className='text-justify	'>
                     Aquí pots jugar a identificar espècies dels grups taxonòmics que més t'interessin.
-                    Al formulari tens una selecció d'alguns grups que et poden ser interessants.
+                    Al formulari tens una selecció d'alguns grups que et poden semblar interessants. Tots ells contenen
+                    <span className='font-bold'> les 10 espècies més comunes a Minka </span> dins del corresponent grup taxonòmic.
                     Si no trobes el que busques utilitza la pàgina <Link href="/explore"><span className='text-blue-500 hover:text-blue-700 font-bold'>Explora </span></Link>
                     per seleccionar un test amb el grup que més t'interessi.
                 </p>
