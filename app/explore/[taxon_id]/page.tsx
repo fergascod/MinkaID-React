@@ -44,7 +44,7 @@ function Taxa(taxonId, data, desc) {
                             href={`/explore/${data["parent_id"]}`}
                             className="text-sm font-medium text-blue-500 hover:text-blue-700 mb-2 transition-colors duration-200"
                         >
-                            &larr; Go to Parent Taxon
+                            &larr; Ves al taxó pare
                         </Link>
                     )}
 
@@ -52,7 +52,7 @@ function Taxa(taxonId, data, desc) {
                         href={`/test?taxon_id=${taxonId}&num_questions=5`}
                         className="inline-block bg-blue-600 text-white rounded-md py-2 px-4 font-semibold my-4 hover:bg-blue-700 transition-colors duration-200"
                     >
-                        Take a Quiz on This Taxon!
+                        Fes un test d'aquest taxó
                     </Link>
 
                     <figure className="w-full">
@@ -78,8 +78,8 @@ function Taxa(taxonId, data, desc) {
 
             {/* Scrollable Sidebar for Child Taxons */}
             <div className="w-64 h-full overflow-y-auto bg-white rounded-lg shadow-md p-4 ml-8">
-                <h2 className="text-lg font-semibold text-gray-800 mb-3">Child Taxons</h2>
-                {desc ? desc : <p className="text-gray-500">Loading descriptions...</p>}
+                <h2 className="text-lg font-semibold text-gray-800 mb-3">Subtaxons</h2>
+                {desc ? desc : <p className="text-gray-500">Loading descendants...</p>}
             </div>
         </div>
     );
