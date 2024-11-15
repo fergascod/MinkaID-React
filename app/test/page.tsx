@@ -42,9 +42,8 @@ function Question({ taxonName, question, onGenerateNewQuestion, setResp, updateS
 
     return (
         <div className="max-w-[90vw] max-h-[90vh]">
-            <dialog ref={dialogRef} className="w-2/3 max-w-none backdrop:bg-black/80">
+            <dialog ref={dialogRef} onClick={() => dialogRef.current?.close()} className="w-2/3 max-w-none backdrop:bg-black/80">
                 <img src={question.url["url"]} alt="Species" className="rounded w-full h-auto object-contain" />
-                <button onClick={() => dialogRef.current?.close()}>cancel</button>
             </dialog>
             <div className="p-6 bg-gray-100 rounded-lg shadow-md text-center">
                 <h1 className="text-2xl font-semibold text-gray-800 mb-4">Mode de joc: {taxonName}</h1>
