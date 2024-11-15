@@ -22,18 +22,13 @@ function returnName(sp) {
     return sp["name"]
 }
 
-function Question({ taxonName, question, onGenerateNewQuestion, setResp, updateScore }) {
+function Question({ taxonName, question, onGenerateNewQuestion, handleAnswer }) {
     const dialogRef = useRef<HTMLDialogElement | null>(null)
     const options = question.species.map((species, i) => (
         <div key={i} className="my-2">
             <button
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors duration-200"
-                onClick={() => {
-                    setResp(i);
-                    console.log(question["correct"] === i);
-                    updateScore(question["correct"] === i);
-                    onGenerateNewQuestion();
-                }}
+                onClick={() => { handleAnswer(i) }}
             >
                 {returnName(species)}
             </button>
@@ -57,20 +52,46 @@ function Question({ taxonName, question, onGenerateNewQuestion, setResp, updateS
     );
 }
 
-function Results(points, numQuestions) {
+function Results({ points, numQuestions, answeredQuestions }) {
+    const dialogRef = useRef<HTMLDialogElement | null>(null);
+    const [activeImage, setActiveImage] = useState<string | null>(null);
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-            <h2 className="text-3xl font-semibold text-gray-800 mb-4">Test completat!</h2>
+            <h2 className="mt-8 text-3xl font-semibold text-gray-800 mb-4">Test completat!</h2>
             <p className="text-lg text-gray-700 mb-6">
-                N'has encertat <span className="font-bold text-blue-600">{points}</span> de <span className="font-bold text-blue-600">{numQuestions}</span>
+                N'has encertat <span className="font-bold text-blue-600">{points}</span> de{' '}
+                <span className="font-bold text-blue-600">{numQuestions}</span>
             </p>
-            <button
-                className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200"
-            >
+
+            <div className="w-full max-w-4xl mx-auto">
+                <h3 className="text-center text-xl font-semibold text-gray-700 mb-4">Respostes</h3>
+                <ul className="space-y-6">
+                    {answeredQuestions.map((item, index) => (
+                        <li key={index} className="flex flex-col items-center bg-white shadow-md rounded-lg p-4">
+                            <button onClick={() => { setActiveImage(item.question.url.url); dialogRef.current?.showModal() }}>
+                                <img
+                                    src={item.question.url.url}
+                                    alt={`Correct species: ${returnName(item.question.species[item.question.correct])}`}
+                                    className="w-32 h-32 object-cover rounded mb-4"
+                                />
+                            </button>
+                            <p className={`text-lg font-medium ${item.isCorrect ? "text-green-600" : "text-red-600"}`}>
+                                {returnName(item.question.species[item.question.correct])}
+                            </p>
+                            {!item.isCorrect ? <p className='text-center'> La teva resposta: <br />{returnName(item.question.species[item.userResponse])}</p> : <></>}
+                            <dialog ref={dialogRef} onClick={() => dialogRef.current?.close()} className="w-2/3 max-w-none backdrop:bg-black/80">
+                                <img src={activeImage} alt="Species" className="rounded w-full h-auto object-contain" />
+                            </dialog>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
+            <button className="my-8 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200">
                 <Link href={`/new_test`}>Fes un altre test!</Link>
             </button>
         </div>
-    )
+    );
 }
 
 export default function Test() {
@@ -86,6 +107,9 @@ export default function Test() {
     const [question, setQuestion] = useState(null);
     const [resp, setResp] = useState(null);
     const [points, setPoints] = useState(0);
+    const [answeredQuestions, setAnsweredQuestions] = useState<
+        { question: any; userResponse: number; isCorrect: boolean }[]
+    >([]);
 
     // Set up taxonId and numQuestions from router query parameters
     useEffect(() => {
@@ -139,6 +163,22 @@ export default function Test() {
         }
     };
 
+    const handleAnswer = (userResponse: number) => {
+        console.log(answeredQuestions)
+        const isCorrect = question.correct === userResponse;
+
+        // Update points if correct
+        setPoints(points + (isCorrect ? 1 : 0));
+
+        // Track the question and response
+        setAnsweredQuestions((prev) => [
+            ...prev,
+            { question, userResponse, isCorrect },
+        ]);
+
+        // Generate a new question
+        generateQuestion();
+    };
     // Call generateQuestion initially when data becomes available
     useEffect(() => {
         if (data) {
@@ -162,11 +202,13 @@ export default function Test() {
                         taxonName={taxonName}
                         question={question}
                         onGenerateNewQuestion={generateQuestion}
-                        setResp={setResp}
-                        updateScore={(b: boolean) => { setPoints(points + (b ? 1 : 0)) }} />
+                        handleAnswer={handleAnswer} />
                     : "Loading..."}
             </div>
         )
     }
-    return Results(points, numQuestions);
+    return <Results
+        points={points}
+        numQuestions={numQuestions}
+        answeredQuestions={answeredQuestions} />;
 }
