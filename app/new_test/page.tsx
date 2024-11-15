@@ -27,8 +27,8 @@ export default function TestForm() {
     }, [mode, numQuestions]);
 
     return (
-        <div className="flex h-screen items-center justify-center text-center">
-            <form className="bg-white shadow-md rounded px-8 pt-6 pb-8">
+        <div className="grid h-screen items-center justify-center text-center">
+            <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 w-1/2 mx-auto">
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
                         Número de preguntes
@@ -62,9 +62,20 @@ export default function TestForm() {
                     type="submit"
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 >
-                    <Link href={`/test?taxon_id=${mode}&num_questions=${numQuestions}`}>Comença</Link>
+                    <Link href={`/test?taxon_id=${mode}&num_questions=${numQuestions}`}>
+                        Comença
+                    </Link>
                 </button>
-            </form>
+            </div>
+
+            <div className='p-5 m-5 mx-auto w-1/2 outline rounded'>
+                <p className='text-justify	'>
+                    Aquí pots jugar a identificar espècies dels grups taxonòmics que més t'interessin.
+                    Al formulari tens una selecció d'alguns grups que et poden ser interessants.
+                    Si no trobes el que busques utilitza la pàgina <Link href="/explore"><span className='text-blue-500 hover:text-blue-700 font-bold'>Explora </span></Link>
+                    per seleccionar un test amb el grup que més t'interessi.
+                </p>
+            </div>
         </div>
     );
 }
