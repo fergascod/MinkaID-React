@@ -1,4 +1,5 @@
 import '@/app/globals.css';
+import Navbar from '@/app/components/navbar';
 
 export default function RootLayout({
   children,
@@ -7,7 +8,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className='flex justify-center'>{children}</body>
+      <body >
+        <Navbar />
+        {children}
+      </body>
     </html>
   );
 }
