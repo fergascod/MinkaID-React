@@ -5,6 +5,7 @@ export default function Navbar() {
         <nav className="bg-white border-gray-200 dark:bg-gray-900">
             <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                 <a href="https://minka-sdg.org/" className="flex items-center space-x-3 rtl:space-x-reverse">
+                    <span className='text-white font-bold'>Amb dades de </span>
                     <img src="https://minka-sdg.org/attachments/sites/1-logo.svg?1688184492" className="h-8" alt="Flowbite Logo" />
                 </a>
 
