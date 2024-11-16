@@ -56,7 +56,7 @@ function Taxa(taxonId, data, desc) {
                         Fes un test d'aquest taxó
                     </Link>
 
-                    <figure className="w-full">
+                    <figure className="w-full text-center">
                         {data["image"] ? (
                             <div className="rounded-lg overflow-hidden shadow mb-4">
                                 <img
@@ -64,13 +64,11 @@ function Taxa(taxonId, data, desc) {
                                     src={data["image"]["url"].replace("square", "original")}
                                     alt={`${data["taxon_name"]} image`}
                                 />
-                                <figcaption className="text-sm text-gray-500 text-center mt-2">
-                                    {data["image"]["attribution"]}
-                                </figcaption>
                             </div>
                         ) : (
                             <p className="text-center text-gray-500 italic">No image available</p>
                         )}
+                        <p className="text-sm text-gray-500 italic mb-6">{data["image"]["attribution"]}</p>
                     </figure>
                 </div>
             ) : (
@@ -103,7 +101,7 @@ export default function Taxonomy({ params }: { params: Promise<{ taxon_id: strin
 
     useEffect(() => {
         if (taxonId) {
-            const apiUrl = `https://api.minka-sdg.org/v1/taxa/${taxonId}`;
+            const apiUrl = `https://api.minka-sdg.org/v1/taxa?id=${taxonId}&per_page=1&locale=ca`;
             console.log(apiUrl);
 
             // Fetch data from the API once taxonId is available

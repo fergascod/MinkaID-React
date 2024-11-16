@@ -59,14 +59,12 @@ export default function TestForm() {
                         {get_game_modes()}
                     </select>
                 </div>
-                <button
-                    type="submit"
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                >
-                    <Link href={`/test?taxon_id=${mode}&num_questions=${numQuestions}`}>
-                        Comença
-                    </Link>
-                </button>
+
+                <Link
+                    className="inline-block bg-blue-600 text-white rounded-md py-2 px-4 font-semibold my-4 hover:bg-blue-700 transition-colors duration-200"
+                    href={`/test?taxon_id=${mode}&num_questions=${numQuestions}`}>
+                    Comença
+                </Link>
             </div>
 
             <div className='p-5 m-5 mx-auto w-1/2 outline outline-1 rounded shadow-md '>
