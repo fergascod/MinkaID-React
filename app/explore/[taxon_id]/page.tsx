@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link'
 import { returnName } from '@/app/utils'
 
-function get_taxon_name_and_image(json, setData) {
+function get_taxon_name_and_image(json: any, setData: any) {
     const taxon_name = returnName(json["results"][0]);
     console.log(json);
     setData({
@@ -14,7 +14,7 @@ function get_taxon_name_and_image(json, setData) {
     });
 }
 
-function get_desc(json, setDesc) {
+function get_desc(json: any, setDesc: any) {
     const desc = [];
     const n = Math.min(json["total_results"], json["per_page"]);
     for (let i = 0; i < n; i++) {
@@ -31,7 +31,7 @@ function get_desc(json, setDesc) {
     }
     setDesc(desc);
 }
-function Taxa(taxonId, data, desc) {
+function Taxa(taxonId: string | null, data: any, desc: React.JSX.Element[]) {
     return (
         <div className="flex justify-center w-full px-4 py-8 bg-gray-50 min-h-screen">
             {data ? (
@@ -87,7 +87,7 @@ function Taxa(taxonId, data, desc) {
 export default function Taxonomy({ params }: { params: Promise<{ taxon_id: string }> }) {
     const [taxonId, setTaxonId] = useState<string | null>(null);
     const [data, setData] = useState(null);
-    const [desc, setDesc] = useState(null);
+    const [desc, setDesc] = useState<React.JSX.Element[]>([]);
 
     useEffect(() => {
         // Unwrap the params Promise and set taxonId

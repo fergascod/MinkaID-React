@@ -1,14 +1,14 @@
 "use client"
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
 import { returnName } from '@/app/utils'
 
-function getRandomCombination(arr, k) {
+function getRandomCombination(arr: [], k: number) {
     const tempArr = [...arr];
-    const combination = [];
+    const combination: any[] = [];
     for (let i = 0; i < k; i++) {
         const randIndex = Math.floor(Math.random() * tempArr.length);
         combination.push(tempArr[randIndex]);
@@ -17,9 +17,13 @@ function getRandomCombination(arr, k) {
     return combination;
 }
 
-function Question({ taxonName, question, handleAnswer }) {
+function Question({ taxonName, question, handleAnswer }: {
+    taxonName: string,
+    question: any,
+    handleAnswer: (userResponse: number) => void
+}) {
     const dialogRef = useRef<HTMLDialogElement | null>(null)
-    const options = question.species.map((species, i) => (
+    const options = question.species.map((species: any, i: number) => (
         <div key={i} className="my-2">
             <button
                 className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors duration-200"
@@ -47,7 +51,11 @@ function Question({ taxonName, question, handleAnswer }) {
     );
 }
 
-function Results({ points, numQuestions, answeredQuestions }) {
+function Results({ points, numQuestions, answeredQuestions }: {
+    points: number,
+    numQuestions: number,
+    answeredQuestions: { question: any; userResponse: number; isCorrect: boolean }[]
+}) {
     const dialogRef = useRef<HTMLDialogElement | null>(null);
     const [activeImage, setActiveImage] = useState<string | null>(null);
     return (
@@ -75,7 +83,10 @@ function Results({ points, numQuestions, answeredQuestions }) {
                             </p>
                             {!item.isCorrect ? <p className='text-center'> La teva resposta: <br />{returnName(item.question.species[item.userResponse])}</p> : <></>}
                             <dialog ref={dialogRef} onClick={() => dialogRef.current?.close()} className="w-2/3 max-w-none backdrop:bg-black/80">
-                                <img src={activeImage} alt="Species" className="rounded w-full h-auto object-contain" />
+                                <img
+                                    src={activeImage ? activeImage : "https://minka-sdg.org/attachments/sites/1-logo.svg?1688184492"}
+                                    alt="Species"
+                                    className="rounded w-full h-auto object-contain" />
                             </dialog>
                         </li>
                     ))}
@@ -89,17 +100,24 @@ function Results({ points, numQuestions, answeredQuestions }) {
     );
 }
 
-export default function Test() {
+
+function TestComponent() {
     const searchParams = useSearchParams()
     const taxon_id = searchParams.get('taxon_id')
-    const num_questions = parseInt(searchParams.get('num_questions'))
+    const num_questions = searchParams.get('num_questions')
 
-    const [taxonId, setTaxonId] = useState(null);
-    const [taxonName, setTaxonName] = useState(null);
-    const [numQuestions, setNumQuestions] = useState(null);
+    const [taxonId, setTaxonId] = useState<string | null>(null);
+    const [taxonName, setTaxonName] = useState<string>("null");
+    const [numQuestions, setNumQuestions] = useState(5);
     const [ans, setAns] = useState<number | null>(null);
     const [data, setData] = useState(null);
-    const [question, setQuestion] = useState(null);
+    const [question, setQuestion] = useState<
+        {
+            url: string,
+            species: any[],
+            correct: number
+        } | null
+    >(null);
     const [points, setPoints] = useState(0);
     const [answeredQuestions, setAnsweredQuestions] = useState<
         { question: any; userResponse: number; isCorrect: boolean }[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -109,7 +127,8 @@ export default function Test() {
     useEffect(() => {
         if (taxon_id) { // Ensure query param is loaded before setting state
             setTaxonId(/^\+?(0|[1-9]\d*)$/.test(taxon_id) ? taxon_id : "1");
-            setNumQuestions(/^\+?(0|[1-9]\d*)$/.test(num_questions) ? num_questions : "1");
+            //setNumQuestions(/^\+?(0|[1-9]\d*)$/.test(num_questions) ? num_questions : "1");
+            setNumQuestions(num_questions ? parseInt(num_questions) : 5);
         }
     }, [taxon_id, num_questions]);
 
@@ -159,7 +178,7 @@ export default function Test() {
 
     const handleAnswer = (userResponse: number) => {
         console.log(answeredQuestions)
-        const isCorrect = question.correct === userResponse;
+        const isCorrect = question?.correct === userResponse;
 
         // Update points if correct
         setPoints(points + (isCorrect ? 1 : 0));
@@ -181,7 +200,7 @@ export default function Test() {
     }, [data]);
 
 
-    if (ans < num_questions) {
+    if (ans != null && ans < numQuestions) {
         return (
             <div>
                 {question
@@ -197,4 +216,12 @@ export default function Test() {
         points={points}
         numQuestions={numQuestions}
         answeredQuestions={answeredQuestions} />;
+}
+
+export default function Test() {
+    return (
+        <Suspense fallback={<p>Loading...</p>}>
+            <TestComponent />
+        </Suspense>
+    );
 }
