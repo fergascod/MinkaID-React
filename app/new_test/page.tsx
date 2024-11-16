@@ -21,6 +21,7 @@ function get_game_modes() {
 export default function TestForm() {
     const [mode, setMode] = useState<string | null>(null);
     const [numQuestions, setNumQuestions] = useState<number | null>(null);
+    const [numSpecies, setNumSpecies] = useState<number | null>(null);
 
     useEffect(() => {
         console.log(`/test?taxon_id=${mode}&num_questions=${numQuestions}`);
@@ -45,6 +46,20 @@ export default function TestForm() {
                             onChange={(e) => setNumQuestions(parseInt(e.target.value))}
                         />
                     </div>
+                    <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2">
+                            Número d'espècies
+                        </label>
+                        <input
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            id="num_preg"
+                            type="number"
+                            min="2"
+                            max="100"
+                            step="1"
+                            onChange={(e) => setNumSpecies(parseInt(e.target.value))}
+                        />
+                    </div>
                     <div className="mb-6">
                         <label className="block text-gray-700 text-sm font-bold mb-2">
                             Mode de joc
@@ -63,17 +78,20 @@ export default function TestForm() {
 
                     <Link
                         className="inline-block bg-blue-600 text-white rounded-md py-2 px-4 font-semibold my-4 hover:bg-blue-700 transition-colors duration-200"
-                        href={`/test?taxon_id=${mode}&num_questions=${numQuestions}`}>
+                        href={`/test?taxon_id=${mode}&num_questions=${numQuestions}&num_species=${numSpecies}`}>
                         Comença
                     </Link>
                 </div>
 
                 <div className='p-5 m-5 mx-auto w-1/2 outline outline-1 rounded shadow-md '>
                     <p className='text-justify	'>
-                        Aquí pots jugar a identificar espècies dels grups taxonòmics que més t'interessin.
-                        Al formulari tens una selecció d'alguns grups que et poden semblar interessants. Tots ells contenen
-                        <span className='font-bold'> les 10 espècies més comunes a Minka </span> dins del corresponent grup taxonòmic.
-                        Si no trobes el que busques utilitza la pàgina <Link href="/explore"><span className='text-blue-500 hover:text-blue-700 font-bold'>Explora </span></Link>
+                        Aquí pots jugar a identificar espècies dels grups taxonòmics que més t'agradin.
+                        Al formulari tens una selecció d'alguns grups que et poden semblar interessants.
+                        Selecciona el nombre d'espècies que vols incloure al test: quantes més n'escullis més
+                        difícil serà!
+                        <br />
+                        Si no trobes el que busques utilitza la pàgina
+                        <Link href="/explore"><span className='text-blue-500 hover:text-blue-700 font-bold'> Explora </span></Link>
                         per seleccionar un test amb el grup que més t'interessi.
                     </p>
                 </div>

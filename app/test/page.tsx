@@ -105,10 +105,13 @@ function TestComponent() {
     const searchParams = useSearchParams()
     const taxon_id = searchParams.get('taxon_id')
     const num_questions = searchParams.get('num_questions')
+    const num_species = searchParams.get('num_species')
 
     const [taxonId, setTaxonId] = useState<string | null>(null);
     const [taxonName, setTaxonName] = useState<string>("null");
     const [numQuestions, setNumQuestions] = useState(5);
+    const [numSpecies, setNumSpecies] = useState(10);
+
     const [ans, setAns] = useState<number | null>(null);
     const [data, setData] = useState(null);
     const [question, setQuestion] = useState<
@@ -129,8 +132,9 @@ function TestComponent() {
             setTaxonId(/^\+?(0|[1-9]\d*)$/.test(taxon_id) ? taxon_id : "1");
             //setNumQuestions(/^\+?(0|[1-9]\d*)$/.test(num_questions) ? num_questions : "1");
             setNumQuestions(num_questions ? parseInt(num_questions) : 5);
+            setNumSpecies(num_species ? parseInt(num_species) : 10);
         }
-    }, [taxon_id, num_questions]);
+    }, [taxon_id, num_questions, num_species]);
 
     // Fetch species data based on taxonId
     useEffect(() => {
@@ -146,7 +150,7 @@ function TestComponent() {
     // Fetch species data based on taxonId
     useEffect(() => {
         if (taxonId) {
-            const apiUrl = `https://api.minka-sdg.org/v1/taxa?taxon_id=${taxonId}&rank=species&locale=ca&per_page=10`;
+            const apiUrl = `https://api.minka-sdg.org/v1/taxa?taxon_id=${taxonId}&rank=species&locale=ca&per_page=${numSpecies}`;
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(json => setData(json))
@@ -160,7 +164,7 @@ function TestComponent() {
             if (ans !== null) setAns(ans + 1);
             else setAns(0);
             const species = data["results"];
-            const numOptions = 5;
+            const numOptions = Math.min(numSpecies, 5);
             const options = getRandomCombination(species, numOptions);
             const correctIndx = Math.floor(Math.random() * numOptions);
             const apiUrl = `https://api.minka-sdg.org/v1/observations?photo_license=cc-by-nc&taxon_id=${options[correctIndx]["id"]}&quality_grade=research&order=desc&order_by=created_at`;
