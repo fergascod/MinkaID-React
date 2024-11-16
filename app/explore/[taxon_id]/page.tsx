@@ -15,7 +15,7 @@ function get_taxon_name_and_image(json, setData) {
 
 function get_desc(json, setDesc) {
     const desc = [];
-    const n = json["total_results"];
+    const n = Math.min(json["total_results"], json["per_page"]);
     for (let i = 0; i < n; i++) {
         desc.push(
             <div key={i} className="mb-3">
@@ -102,7 +102,7 @@ export default function Taxonomy({ params }: { params: Promise<{ taxon_id: strin
 
     useEffect(() => {
         if (taxonId) {
-            const apiUrl = `https://minka-sdg.org:4000/v1/taxa/${taxonId}`;
+            const apiUrl = `https://api.minka-sdg.org/v1/taxa/${taxonId}`;
             console.log(apiUrl);
 
             // Fetch data from the API once taxonId is available
@@ -115,7 +115,7 @@ export default function Taxonomy({ params }: { params: Promise<{ taxon_id: strin
 
     useEffect(() => {
         if (taxonId) {
-            const apiUrl = `https://minka-sdg.org:4000/v1/taxa?parent_id=${taxonId}&per_page=200`;
+            const apiUrl = `https://api.minka-sdg.org/v1/taxa?parent_id=${taxonId}&per_page=200`;
             console.log(apiUrl);
 
             // Fetch data from the API once taxonId is available

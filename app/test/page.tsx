@@ -36,7 +36,7 @@ function Question({ taxonName, question, onGenerateNewQuestion, handleAnswer }) 
     ));
 
     return (
-        <div className="max-w-[90vw] max-h-[90vh]">
+        <div>
             <dialog ref={dialogRef} onClick={() => dialogRef.current?.close()} className="w-2/3 max-w-none backdrop:bg-black/80">
                 <img src={question.url["url"]} alt="Species" className="rounded w-full h-auto object-contain" />
             </dialog>
@@ -63,7 +63,7 @@ function Results({ points, numQuestions, answeredQuestions }) {
                 <span className="font-bold text-blue-600">{numQuestions}</span>
             </p>
 
-            <div className="w-full max-w-4xl mx-auto">
+            <div className="max-w-4xl mx-auto">
                 <h3 className="text-center text-xl font-semibold text-gray-700 mb-4">Respostes</h3>
                 <ul className="space-y-6">
                     {answeredQuestions.map((item, index) => (
@@ -122,7 +122,7 @@ export default function Test() {
     // Fetch species data based on taxonId
     useEffect(() => {
         if (taxonId) {
-            const apiUrl = `https://minka-sdg.org:4000/v1/taxa?taxon_id=${taxonId}&locale=ca&per_page=1`;
+            const apiUrl = `https://api.minka-sdg.org/v1/taxa?taxon_id=${taxonId}&locale=ca&per_page=1`;
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(json => setTaxonName(returnName(json["results"][0])))
@@ -133,7 +133,7 @@ export default function Test() {
     // Fetch species data based on taxonId
     useEffect(() => {
         if (taxonId) {
-            const apiUrl = `https://minka-sdg.org:4000/v1/taxa?taxon_id=${taxonId}&rank=species&locale=ca&per_page=10`;
+            const apiUrl = `https://api.minka-sdg.org/v1/taxa?taxon_id=${taxonId}&rank=species&locale=ca&per_page=10`;
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(json => setData(json))
@@ -150,7 +150,7 @@ export default function Test() {
             const numOptions = 5;
             const options = getRandomCombination(species, numOptions);
             const correctIndx = Math.floor(Math.random() * numOptions);
-            const apiUrl = `https://minka-sdg.org:4000/v1/observations?photo_license=cc-by-nc&taxon_id=${options[correctIndx]["id"]}&quality_grade=research&order=desc&order_by=created_at`;
+            const apiUrl = `https://api.minka-sdg.org/v1/observations?photo_license=cc-by-nc&taxon_id=${options[correctIndx]["id"]}&quality_grade=research&order=desc&order_by=created_at`;
 
             fetch(apiUrl)
                 .then(response => response.json())
