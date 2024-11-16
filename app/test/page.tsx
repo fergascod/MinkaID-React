@@ -17,7 +17,7 @@ function getRandomCombination(arr, k) {
     return combination;
 }
 
-function Question({ taxonName, question, onGenerateNewQuestion, handleAnswer }) {
+function Question({ taxonName, question, handleAnswer }) {
     const dialogRef = useRef<HTMLDialogElement | null>(null)
     const options = question.species.map((species, i) => (
         <div key={i} className="my-2">
@@ -100,10 +100,9 @@ export default function Test() {
     const [ans, setAns] = useState<number | null>(null);
     const [data, setData] = useState(null);
     const [question, setQuestion] = useState(null);
-    const [resp, setResp] = useState(null);
     const [points, setPoints] = useState(0);
     const [answeredQuestions, setAnsweredQuestions] = useState<
-        { question: any; userResponse: number; isCorrect: boolean }[]
+        { question: any; userResponse: number; isCorrect: boolean }[] // eslint-disable-line @typescript-eslint/no-explicit-any
     >([]);
 
     // Set up taxonId and numQuestions from router query parameters
@@ -181,13 +180,6 @@ export default function Test() {
         }
     }, [data]);
 
-    useEffect(() => {
-        console.log(question)
-        console.log(points)
-        console.log(ans)
-    }, [question])
-
-    if (!taxon_id) { return TestForm(); }
 
     if (ans < num_questions) {
         return (
@@ -196,7 +188,6 @@ export default function Test() {
                     ? <Question
                         taxonName={taxonName}
                         question={question}
-                        onGenerateNewQuestion={generateQuestion}
                         handleAnswer={handleAnswer} />
                     : "Loading..."}
             </div>
