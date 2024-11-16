@@ -13,6 +13,13 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      fontFamily: {
+        sans: [
+          '"Segoe UI"',
+          'Roboto',
+          'sans-serif',
+        ],
+      },
     },
   },
   plugins: [],
