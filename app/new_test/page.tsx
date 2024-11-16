@@ -27,8 +27,9 @@ export default function TestForm() {
     }, [mode, numQuestions]);
 
     return (
-        <div className="grid h-screen items-center justify-center text-center">
-            <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 w-1/2 mx-auto">
+        <div className="h-screen items-center justify-center text-center">
+            <h1 className='text-4xl font-bold text-blue-600 pt-4'> Nou joc</h1>
+            <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 w-1/2 mt-4 mx-auto">
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
                         Número de preguntes
@@ -68,7 +69,7 @@ export default function TestForm() {
                 </button>
             </div>
 
-            <div className='p-5 m-5 mx-auto w-1/2 outline rounded'>
+            <div className='p-5 m-5 mx-auto w-1/2 outline outline-1 rounded shadow-md '>
                 <p className='text-justify	'>
                     Aquí pots jugar a identificar espècies dels grups taxonòmics que més t'interessin.
                     Al formulari tens una selecció d'alguns grups que et poden semblar interessants. Tots ells contenen
