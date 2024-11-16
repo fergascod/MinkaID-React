@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
+import { returnName } from '@/app/utils'
+
 function getRandomCombination(arr, k) {
     const tempArr = [...arr];
     const combination = [];
@@ -13,13 +15,6 @@ function getRandomCombination(arr, k) {
         tempArr.splice(randIndex, 1);
     }
     return combination;
-}
-
-function returnName(sp) {
-    if ("preferred_common_name" in sp) {
-        return `${sp["preferred_common_name"]} (${sp["name"]})`
-    }
-    return sp["name"]
 }
 
 function Question({ taxonName, question, onGenerateNewQuestion, handleAnswer }) {
@@ -38,12 +33,12 @@ function Question({ taxonName, question, onGenerateNewQuestion, handleAnswer }) 
     return (
         <div>
             <dialog ref={dialogRef} onClick={() => dialogRef.current?.close()} className="w-2/3 max-w-none backdrop:bg-black/80">
-                <img src={question.url["url"]} alt="Species" className="rounded w-full h-auto object-contain" />
+                <img src={question.url["url"].replace("square", "original")} alt="Species" className="rounded w-full h-auto object-contain" />
             </dialog>
             <div className="p-6 bg-gray-100 rounded-lg shadow-md text-center">
                 <h1 className="text-2xl font-semibold text-gray-800 mb-4">Mode de joc: {taxonName}</h1>
                 <button onClick={() => dialogRef.current?.showModal()}>
-                    <img src={question.url["url"]} alt="Species" className="w-full max-w-md mx-auto mb-4 rounded shadow-sm" />
+                    <img src={question.url["url"].replace("square", "original")} alt="Species" className="w-full max-w-md mx-auto mb-4 rounded shadow-sm" />
                 </button>
                 <p className="text-sm text-gray-500 italic mb-6">{question.url["attribution"]}</p>
                 <ul className="space-y-2">{options}</ul>
@@ -68,9 +63,9 @@ function Results({ points, numQuestions, answeredQuestions }) {
                 <ul className="space-y-6">
                     {answeredQuestions.map((item, index) => (
                         <li key={index} className="flex flex-col items-center bg-white shadow-md rounded-lg p-4">
-                            <button onClick={() => { setActiveImage(item.question.url.url); dialogRef.current?.showModal() }}>
+                            <button onClick={() => { setActiveImage(item.question.url.url.replace("square", "original")); dialogRef.current?.showModal() }}>
                                 <img
-                                    src={item.question.url.url}
+                                    src={item.question.url.url.replace("square", "original")}
                                     alt={`Correct species: ${returnName(item.question.species[item.question.correct])}`}
                                     className="w-32 h-32 object-cover rounded mb-4"
                                 />

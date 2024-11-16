@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link'
+import { returnName } from '@/app/utils'
 
 function get_taxon_name_and_image(json, setData) {
-    const taxon_name = json["results"][0]["name"];
+    const taxon_name = returnName(json["results"][0]);
     console.log(json);
     setData({
         "taxon_name": taxon_name,
@@ -23,7 +24,7 @@ function get_desc(json, setDesc) {
                     className="text-md font-medium text-blue-500 hover:text-blue-700 transition-colors duration-200"
                     href={`/explore/${json["results"][i]["id"]}`}
                 >
-                    {json["results"][i]["name"]} <span className="text-gray-400">({json["results"][i]["id"]})</span>
+                    {returnName(json["results"][i])} <span className="text-gray-400">({json["results"][i]["id"]})</span>
                 </Link>
             </div>
         );
@@ -60,7 +61,7 @@ function Taxa(taxonId, data, desc) {
                             <div className="rounded-lg overflow-hidden shadow mb-4">
                                 <img
                                     className="w-full h-64 object-cover"
-                                    src={data["image"]["url"]}
+                                    src={data["image"]["url"].replace("square", "original")}
                                     alt={`${data["taxon_name"]} image`}
                                 />
                                 <figcaption className="text-sm text-gray-500 text-center mt-2">
@@ -115,7 +116,7 @@ export default function Taxonomy({ params }: { params: Promise<{ taxon_id: strin
 
     useEffect(() => {
         if (taxonId) {
-            const apiUrl = `https://api.minka-sdg.org/v1/taxa?parent_id=${taxonId}&per_page=200`;
+            const apiUrl = `https://api.minka-sdg.org/v1/taxa?parent_id=${taxonId}&per_page=200&locale=ca`;
             console.log(apiUrl);
 
             // Fetch data from the API once taxonId is available
