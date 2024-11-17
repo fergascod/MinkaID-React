@@ -204,7 +204,7 @@ function TestComponent() {
     }, [data]);
 
 
-    if (ans != null && ans < numQuestions) {
+    if (ans == null || ans < numQuestions) {
         return (
             <div>
                 {question
