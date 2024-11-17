@@ -92,10 +92,18 @@ function Results({ points, numQuestions, answeredQuestions }: {
                     ))}
                 </ul>
             </div>
+            <div className='flex'>
+                <button className="mx-1 my-8 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200">
+                    <Link href={`/new_test`}>Fes un altre test!</Link>
+                </button>
+                <button
+                    className="mx-1 my-8 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200"
+                    onClick={() => { window.location.reload() }}>
+                    Torna a fer el test!
+                </button>
+            </div>
 
-            <button className="my-8 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200">
-                <Link href={`/new_test`}>Fes un altre test!</Link>
-            </button>
+
         </div>
     );
 }
