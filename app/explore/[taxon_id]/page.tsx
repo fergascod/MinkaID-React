@@ -50,7 +50,7 @@ function Taxa(taxonId: string | null, data: any, desc: React.JSX.Element[]) {
                     )}
 
                     <Link
-                        href={`/test?taxon_id=${taxonId}&num_questions=5`}
+                        href={`/new_test/${taxonId}`}
                         className="inline-block bg-blue-600 text-white rounded-md py-2 px-4 font-semibold my-4 hover:bg-blue-700 transition-colors duration-200"
                     >
                         Fes un test d'aquest taxó
