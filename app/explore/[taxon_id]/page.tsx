@@ -68,7 +68,7 @@ function Taxa(taxonId: string | null, data: any, desc: React.JSX.Element[]) {
                         ) : (
                             <p className="text-center text-gray-500 italic">No image available</p>
                         )}
-                        <p className="text-sm text-gray-500 italic mb-6">{data["image"]["attribution"]}</p>
+                        <p className="text-sm text-gray-500 italic mb-6">{data["image"] ? data["image"]["attribution"] : ""}</p>
                     </figure>
                 </div>
             ) : (
