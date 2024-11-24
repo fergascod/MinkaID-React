@@ -9,4 +9,14 @@
     p {
       @apply font-sans;
     }
+    button {
+      @apply px-4 ;
+      @apply py-2 ;
+      @apply bg-blue-500 ;
+      @apply text-white ;
+      @apply rounded ;
+      @apply hover:bg-blue-600 ;
+      @apply transition-colors ;
+      @apply duration-200;
+    }
   }

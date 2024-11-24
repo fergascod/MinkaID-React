@@ -2,10 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
-import { Auth } from '@supabase/auth-ui-react'
-import { ThemeSupa } from '@supabase/auth-ui-shared'
 
 import { Database } from '@/database.types'
+
 import Link from 'next/link'
 
 const supabaseUrl = 'https://sofujpixmzfvshtuqysm.supabase.co'
@@ -35,8 +34,13 @@ export default function App() {
     if (!session) {
         return (
             <div className='grid place-items-center'>
-                <Auth supabaseClient={supabase} appearance={{ theme: ThemeSupa }}
-                    providers={[]} />
+                <p>No heu iniciat sessió</p>
+                <Link
+                    href={`/login`}
+                    className="text-sm font-medium text-blue-500 hover:text-blue-700 mb-2 transition-colors duration-200"
+                >
+                    Login
+                </Link>
             </div>
 
         )
@@ -44,13 +48,12 @@ export default function App() {
     else {
         return (
             <div>
-                <p>Logged in!</p>
-                <Link
-                    href={`/profile`}
-                    className="text-sm font-medium text-blue-500 hover:text-blue-700 mb-2 transition-colors duration-200"
-                >
-                    Ves al teu perfil
-                </Link>
+                <button onClick={async () => {
+                    console.log(session)
+                }}>pppp</button>
+                <button onClick={async () => {
+                    await supabase.auth.signOut()
+                }}>Log out</button>
             </div>
         )
     }
