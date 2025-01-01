@@ -21,11 +21,11 @@ function Question({ taxonName, question, handleAnswer }: {
     question: any,
     handleAnswer: (userResponse: number) => void
 }) {
+    const dialogRef = useRef<HTMLDialogElement | null>(null)
     if (!question['url'])
         return <div className="p-6 text-center">
             <p>No data for this taxon: {taxonName}</p>
         </div>;
-    const dialogRef = useRef<HTMLDialogElement | null>(null)
     const options = question.species.map((species: any, i: number) => (
         <div key={i} className="my-2">
             <button
