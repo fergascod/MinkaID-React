@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-
 import { returnName } from '@/app/utils'
 
 function getRandomCombination(arr: [], k: number) {
@@ -22,6 +21,10 @@ function Question({ taxonName, question, handleAnswer }: {
     question: any,
     handleAnswer: (userResponse: number) => void
 }) {
+    if (!question['url'])
+        return <div className="p-6 text-center">
+            <p>No data for this taxon: {taxonName}</p>
+        </div>;
     const dialogRef = useRef<HTMLDialogElement | null>(null)
     const options = question.species.map((species: any, i: number) => (
         <div key={i} className="my-2">
@@ -124,9 +127,9 @@ function TestComponent() {
     const [data, setData] = useState(null);
     const [question, setQuestion] = useState<
         {
-            url: string,
-            species: any[],
-            correct: number
+            url: string | null,
+            species: any[] | null,
+            correct: number | null
         } | null
     >(null);
     const [points, setPoints] = useState(0);
@@ -171,20 +174,28 @@ function TestComponent() {
         if (data) {
             if (ans !== null) setAns(ans + 1);
             else setAns(0);
-            const species = data["results"];
-            const numOptions = Math.min(numSpecies, 5);
-            const options = getRandomCombination(species, numOptions);
-            const correctIndx = Math.floor(Math.random() * numOptions);
-            const apiUrl = `https://api.minka-sdg.org/v1/observations?photo_license=cc-by-nc&taxon_id=${options[correctIndx]["id"]}&quality_grade=research&order=desc&order_by=created_at`;
+            if (data['total_results'] == 0) {
+                setQuestion({
+                    url: null,
+                    species: null,
+                    correct: null
+                });
+            } else {
+                const species = data["results"];
+                const numOptions = Math.min(numSpecies, 5);
+                const options = getRandomCombination(species, numOptions);
+                const correctIndx = Math.floor(Math.random() * numOptions);
+                const apiUrl = `https://api.minka-sdg.org/v1/observations?photo_license=cc-by-nc&taxon_id=${options[correctIndx]["id"]}&quality_grade=research&order=desc&order_by=created_at`;
 
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(json => setQuestion({
-                    url: json["results"][Math.floor(Math.random() * json["results"].length)]["photos"][0],
-                    species: options,
-                    correct: correctIndx
-                }))
-                .catch(error => console.error(error));
+                fetch(apiUrl)
+                    .then(response => response.json())
+                    .then(json => setQuestion({
+                        url: json["results"][Math.floor(Math.random() * json["results"].length)]["photos"][0],
+                        species: options,
+                        correct: correctIndx
+                    }))
+                    .catch(error => console.error(error));
+            }
         }
     };
 
