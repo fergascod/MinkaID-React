@@ -5,7 +5,18 @@ import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { returnName } from '@/app/utils'
 
-function getRandomCombination(arr: [], k: number) {
+function filterZeros(arr: []) {
+    //TODO: maybe binary search instead of linear search XD
+    console.log(arr.length)
+    let n = 1;
+    while (n < arr.length && arr[n]['observations_count'] > 0) {
+        n++;
+    }
+    const result: any[] = arr.slice(0, n - 1);
+    return result;
+}
+
+function getRandomCombination(arr: any[], k: number) {
     const tempArr = [...arr];
     const combination: any[] = [];
     for (let i = 0; i < k; i++) {
@@ -181,7 +192,8 @@ function TestComponent() {
                     correct: null
                 });
             } else {
-                const species = data["results"];
+                const species = filterZeros(data["results"]);
+                console.log(species.length);
                 const numOptions = Math.min(numSpecies, 5);
                 const options = getRandomCombination(species, numOptions);
                 const correctIndx = Math.floor(Math.random() * numOptions);
