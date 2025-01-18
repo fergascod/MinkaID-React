@@ -12,7 +12,7 @@ function filterZeros(arr: []) {
     while (n < arr.length && arr[n]['observations_count'] > 0) {
         n++;
     }
-    const result: any[] = arr.slice(0, n - 1);
+    const result: any[] = arr.slice(0, n);
     return result;
 }
 
@@ -193,10 +193,13 @@ function TestComponent() {
                 });
             } else {
                 const species = filterZeros(data["results"]);
-                console.log(species.length);
-                const numOptions = Math.min(numSpecies, 5);
+                const numOptions = Math.min(species.length, 5);
+                console.log(numSpecies)
+                console.log(species.length)
+                console.log(numOptions)
                 const options = getRandomCombination(species, numOptions);
                 const correctIndx = Math.floor(Math.random() * numOptions);
+                console.log(options)
                 const apiUrl = `https://api.minka-sdg.org/v1/observations?photo_license=cc-by-nc&taxon_id=${options[correctIndx]["id"]}&quality_grade=research&order=desc&order_by=created_at`;
 
                 fetch(apiUrl)
