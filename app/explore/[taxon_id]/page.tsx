@@ -101,7 +101,7 @@ export default function Taxonomy({ params }: { params: Promise<{ taxon_id: strin
 
     useEffect(() => {
         if (taxonId) {
-            const apiUrl = `https://api.minka-sdg.org/v1/taxa?id=${taxonId}&per_page=1&locale=ca`;
+            const apiUrl = `https://api.inaturalist.org/v1/taxa?id=${taxonId}&per_page=1&locale=ca`;
             console.log(apiUrl);
 
             // Fetch data from the API once taxonId is available
@@ -114,7 +114,7 @@ export default function Taxonomy({ params }: { params: Promise<{ taxon_id: strin
 
     useEffect(() => {
         if (taxonId) {
-            const apiUrl = `https://api.minka-sdg.org/v1/taxa?parent_id=${taxonId}&per_page=200&locale=ca`;
+            const apiUrl = `https://api.inaturalist.org/v1/taxa?parent_id=${taxonId}&per_page=200&locale=ca`;
             console.log(apiUrl);
 
             // Fetch data from the API once taxonId is available

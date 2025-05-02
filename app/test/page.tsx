@@ -98,7 +98,7 @@ function Results({ points, numQuestions, answeredQuestions }: {
                             {!item.isCorrect ? <p className='text-center'> La teva resposta: <br />{returnName(item.question.species[item.userResponse])}</p> : <></>}
                             <dialog ref={dialogRef} onClick={() => dialogRef.current?.close()} className="w-2/3 max-w-none backdrop:bg-black/80">
                                 <img
-                                    src={activeImage ? activeImage : "https://minka-sdg.org/attachments/sites/1-logo.svg?1688184492"}
+                                    src={activeImage ? activeImage : "https://inaturalist.org/attachments/sites/1-logo.svg?1688184492"}
                                     alt="Species"
                                     className="rounded w-full h-auto object-contain" />
                             </dialog>
@@ -161,7 +161,7 @@ function TestComponent() {
     // Fetch species data based on taxonId
     useEffect(() => {
         if (taxonId) {
-            const apiUrl = `https://api.minka-sdg.org/v1/taxa?taxon_id=${taxonId}&locale=ca&per_page=1`;
+            const apiUrl = `https://api.inaturalist.org/v1/taxa?taxon_id=${taxonId}&locale=ca&per_page=1`;
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(json => setTaxonName(returnName(json["results"][0])))
@@ -172,7 +172,7 @@ function TestComponent() {
     // Fetch species data based on taxonId
     useEffect(() => {
         if (taxonId) {
-            const apiUrl = `https://api.minka-sdg.org/v1/taxa?taxon_id=${taxonId}&rank=species&locale=ca&per_page=${numSpecies}`;
+            const apiUrl = `https://api.inaturalist.org/v1/taxa?taxon_id=${taxonId}&rank=species&locale=ca&per_page=${numSpecies}`;
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(json => setData(json))
@@ -200,7 +200,7 @@ function TestComponent() {
                 const options = getRandomCombination(species, numOptions);
                 const correctIndx = Math.floor(Math.random() * numOptions);
                 console.log(options)
-                const apiUrl = `https://api.minka-sdg.org/v1/observations?photo_license=cc-by-nc&taxon_id=${options[correctIndx]["id"]}&quality_grade=research&order=desc&order_by=created_at`;
+                const apiUrl = `https://api.inaturalist.org/v1/observations?photo_license=cc-by-nc&taxon_id=${options[correctIndx]["id"]}&quality_grade=research&order=desc&order_by=created_at`;
 
                 fetch(apiUrl)
                     .then(response => response.json())
