@@ -134,6 +134,9 @@ function TestComponent() {
     const [numQuestions, setNumQuestions] = useState(5);
     const [numSpecies, setNumSpecies] = useState(10);
 
+    // Geofiltering coordinates (radius in km)
+    const coords = { lat: 28.306262, lng: -16.514440, radius: 40 };
+
     const [ans, setAns] = useState<number | null>(null);
     const [data, setData] = useState(null);
     const [question, setQuestion] = useState<
@@ -169,16 +172,22 @@ function TestComponent() {
         }
     }, [taxonId]);
 
-    // Fetch species data based on taxonId
+    // Fetch species data based on taxonId (geofiltered near coords)
     useEffect(() => {
-        if (taxonId) {
-            const apiUrl = `https://api.inaturalist.org/v1/taxa?taxon_id=${taxonId}&rank=species&locale=ca&per_page=${numSpecies}`;
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(json => setData(json))
-                .catch(error => console.error(error));
-        }
-    }, [taxonId]);
+        if (!taxonId) return;
+
+        const apiUrl = `https://api.inaturalist.org/v1/observations/species_counts?taxon_id=${taxonId}&lat=${coords.lat}&lng=${coords.lng}&radius=${coords.radius}&per_page=${numSpecies}&locale=ca`;
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(json => setData({
+                total_results: json.total_results,
+                results: json.results.map((r: any) => ({
+                    ...r.taxon,
+                    observations_count: r.count
+                }))
+            }))
+            .catch(error => console.error(error));
+    }, [taxonId, numSpecies]);
 
     // Function to generate a new question
     const generateQuestion = () => {
