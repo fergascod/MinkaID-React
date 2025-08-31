@@ -5,7 +5,23 @@ import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { returnName } from '@/app/utils'
 
-function filterZeros(arr: []) {
+type SpeciesWithCount = {
+    id: number;
+    observations_count: number;
+    [key: string]: any;
+};
+
+interface SpeciesData {
+    total_results: number;
+    results: SpeciesWithCount[];
+}
+
+type PhotoInfo = {
+    url: string;
+    attribution?: string;
+};
+
+function filterZeros(arr: { observations_count: number }[]) {
     //TODO: maybe binary search instead of linear search XD
     console.log(arr.length)
     let n = 1;
@@ -138,10 +154,10 @@ function TestComponent() {
     const coords = { lat: 28.306262, lng: -16.514440, radius: 40 };
 
     const [ans, setAns] = useState<number | null>(null);
-    const [data, setData] = useState(null);
+    const [data, setData] = useState<SpeciesData | null>(null);
     const [question, setQuestion] = useState<
         {
-            url: string | null,
+            url: PhotoInfo | null,
             species: any[] | null,
             correct: number | null
         } | null
