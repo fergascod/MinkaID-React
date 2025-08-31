@@ -22,7 +22,7 @@ export default function TestForm({ params }: { params: Promise<{ taxon_id: strin
 
     useEffect(() => {
         if (mode) {
-            const apiUrl = `https://api.minka-sdg.org/v1/taxa?taxon_id=${mode}&locale=ca&per_page=1`;
+            const apiUrl = `https://api.inaturalist.org/v1/taxa?taxon_id=${mode}&locale=ca&per_page=1`;
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(json => setTaxonName(returnName(json["results"][0])))

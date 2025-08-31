@@ -5,7 +5,23 @@ import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { returnName } from '@/app/utils'
 
-function filterZeros(arr: []) {
+type SpeciesWithCount = {
+    id: number;
+    observations_count: number;
+    [key: string]: any;
+};
+
+interface SpeciesData {
+    total_results: number;
+    results: SpeciesWithCount[];
+}
+
+type PhotoInfo = {
+    url: string;
+    attribution?: string;
+};
+
+function filterZeros(arr: { observations_count: number }[]) {
     //TODO: maybe binary search instead of linear search XD
     console.log(arr.length)
     let n = 1;
@@ -98,7 +114,7 @@ function Results({ points, numQuestions, answeredQuestions }: {
                             {!item.isCorrect ? <p className='text-center'> La teva resposta: <br />{returnName(item.question.species[item.userResponse])}</p> : <></>}
                             <dialog ref={dialogRef} onClick={() => dialogRef.current?.close()} className="w-2/3 max-w-none backdrop:bg-black/80">
                                 <img
-                                    src={activeImage ? activeImage : "https://minka-sdg.org/attachments/sites/1-logo.svg?1688184492"}
+                                    src={activeImage ? activeImage : "https://inaturalist.org/attachments/sites/1-logo.svg?1688184492"}
                                     alt="Species"
                                     className="rounded w-full h-auto object-contain" />
                             </dialog>
@@ -134,11 +150,14 @@ function TestComponent() {
     const [numQuestions, setNumQuestions] = useState(5);
     const [numSpecies, setNumSpecies] = useState(10);
 
+    // Geofiltering coordinates (radius in km)
+    const coords = { lat: 28.306262, lng: -16.514440, radius: 40 };
+
     const [ans, setAns] = useState<number | null>(null);
-    const [data, setData] = useState(null);
+    const [data, setData] = useState<SpeciesData | null>(null);
     const [question, setQuestion] = useState<
         {
-            url: string | null,
+            url: PhotoInfo | null,
             species: any[] | null,
             correct: number | null
         } | null
@@ -161,7 +180,7 @@ function TestComponent() {
     // Fetch species data based on taxonId
     useEffect(() => {
         if (taxonId) {
-            const apiUrl = `https://api.minka-sdg.org/v1/taxa?taxon_id=${taxonId}&locale=ca&per_page=1`;
+            const apiUrl = `https://api.inaturalist.org/v1/taxa?taxon_id=${taxonId}&locale=ca&per_page=1`;
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(json => setTaxonName(returnName(json["results"][0])))
@@ -169,16 +188,22 @@ function TestComponent() {
         }
     }, [taxonId]);
 
-    // Fetch species data based on taxonId
+    // Fetch species data based on taxonId (geofiltered near coords)
     useEffect(() => {
-        if (taxonId) {
-            const apiUrl = `https://api.minka-sdg.org/v1/taxa?taxon_id=${taxonId}&rank=species&locale=ca&per_page=${numSpecies}`;
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(json => setData(json))
-                .catch(error => console.error(error));
-        }
-    }, [taxonId]);
+        if (!taxonId) return;
+
+        const apiUrl = `https://api.inaturalist.org/v1/observations/species_counts?taxon_id=${taxonId}&lat=${coords.lat}&lng=${coords.lng}&radius=${coords.radius}&per_page=${numSpecies}&locale=ca`;
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(json => setData({
+                total_results: json.total_results,
+                results: json.results.map((r: any) => ({
+                    ...r.taxon,
+                    observations_count: r.count
+                }))
+            }))
+            .catch(error => console.error(error));
+    }, [taxonId, numSpecies]);
 
     // Function to generate a new question
     const generateQuestion = () => {
@@ -200,7 +225,7 @@ function TestComponent() {
                 const options = getRandomCombination(species, numOptions);
                 const correctIndx = Math.floor(Math.random() * numOptions);
                 console.log(options)
-                const apiUrl = `https://api.minka-sdg.org/v1/observations?photo_license=cc-by-nc&taxon_id=${options[correctIndx]["id"]}&quality_grade=research&order=desc&order_by=created_at`;
+                const apiUrl = `https://api.inaturalist.org/v1/observations?photo_license=cc-by-nc&taxon_id=${options[correctIndx]["id"]}&quality_grade=research&order=desc&order_by=created_at`;
 
                 fetch(apiUrl)
                     .then(response => response.json())
